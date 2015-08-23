@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+  <head>
+    <title>smirnoff input</title>
+    <style>
+      
+      .redbox {height: 10px; width: 40px; 
+        background-color: red; position: fixed; 
+        top:0; right: 0;          
+        -webkit-transition: height 2s; /* Safari */
+          transition: height 2s;
+        -webkit-transition-timing-function: ease;}
+
+    </style>
+
+    <link rel="stylesheet" href="uikit.css" />
+
+  </head>
+  <body>
+    
+
+
+      <div class="fleft">
+      <img src="img/0.jpg" class="img">
+      <p id="imgname"> </p>
+      </div>
+
+      <div class="fleft">
+      <div class="uk-progress uk-progress-small uk-progress-danger uk-progress-striped uk-active blid2">
+          <div class="uk-progress-bar xbar2"></div>
+      </div>
+      <br style="clear:both">
+      <p id="personenergy"> </p>
+      </div>
+
+      <div class="fleft">
+        <div class="uk-progress uk-progress-small uk-progress-danger uk-progress-striped uk-active">
+            <div class="uk-progress-bar xbar1"></div>
+        </div>
+
+        <br style="clear:both">
+        <p id="energypercent"> </p>
+      </div>
+
+      <div class="fleft">
+      <div class="uk-progress uk-progress-small uk-progress-danger uk-progress-striped uk-active">
+          <div class="uk-progress-bar"></div>
+      </div>
+      <p id="allimage"> </p>
+      </div>
+
+
+    <script src="socket.io-1.2.0.js"></script>
+    <script src="jquery-1.11.1.js"></script>
+        <script src="uikit.min.js"></script>
+
+    <script>
+      var socket = io();
+
+
+      socket.on('chat message', function(msg){
+        var result = $(".xbar1").width() + parseInt(msg);
+        var justval = parseInt(msg);
+        $('.xbar1').width(result);
+        $('.xbar2').width(justval);
+        $('#personenergy').html(justval+ '/100%');
+        $('#energypercent').html(result + '/300');
+      });
+      socket.on('image', function(msg){
+        $(".img").attr("src",msg);
+        var path = $('.img').attr('src');
+        $('#imgname').html(path);
+      });
+      socket.on('bypass1', function(msg){
+        var result = $(".xbar1").width() + parseInt(msg);
+        $('.xbar1').width(result);
+        $('#energypercent').html(result + '/300');
+
+      });
+
+    </script>
+  </body>
+</html>

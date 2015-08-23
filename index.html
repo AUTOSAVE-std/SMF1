@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+  <head>
+    <title>smirnoff output</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial }
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+      .redbox {height: 10px; width: 40px; 
+        background-color: red; position: fixed; 
+        top:0; right: 0;          
+        -webkit-transition: height 2s; /* Safari */
+          transition: height 2s;
+        -webkit-transition-timing-function: ease;}
+
+
+        .valueset {margin-left: 20px; margin-top: -20px;}
+        #slider-step-value {margin-top: 10px; color: #BBBBBB; text-align: center; font-size: 2.5em;}
+        .fleft {float: left; margin: 20px;}
+        .coverimg {width: 160px; }
+        .coverbutton {margin-top: 27px}
+        .coverbuttom {margin-top: 20px}
+    </style>
+
+    <link rel="stylesheet" href="forindex/nouislider.css" />
+    <link rel="stylesheet" href="forindex/flat-ui.min.css" />
+    <link rel="stylesheet" href="forindex/notify.almost-flat.css" />
+  </head>
+  <body>
+
+
+      <div class="fleft">
+        <div class="fleft coverimg">
+          <img src="img/1.jpg" class="img" width="160">
+          <p id="imgname"> </p>
+        </div>
+        <div class="fleft coverbutton">
+          <div><a href="#newpeople" class="btn btn-block btn-lg btn-primary">New people</a></div>
+          <div class="coverbuttom"><a href="#showpublic" class="btn btn-block btn-lg btn-danger ">Show public</a></div> 
+          <div id="slider-step-value"> </div>
+        </div> 
+        <br style="clear:both">
+
+
+
+
+          <div class="valueset">
+          <div id="slider-step"> </div>
+          </div>
+
+
+      </div>
+
+
+
+
+    
+    <form action="">
+      <input id="m" autocomplete="off" /><button>Send</button>
+      <div class="redbox"></div>
+    </form>
+    <script src="socket.io-1.2.0.js"></script>
+    <script src="jquery-1.11.1.js"></script>
+    <script src="forindex/nouislider.min.js"></script>
+    <script src="forindex/uikit.min.js"></script>
+    <script src="forindex/notify.min.js"></script>
+    <script>
+
+
+    var stepSlider = document.getElementById('slider-step');
+
+    noUiSlider.create(stepSlider, {
+      start: [ 0 ],
+      step: 5,
+      margin: 20,
+      connect: 'lower',
+      range: {
+        'min': [0],
+        'max': [ 100]
+      }
+
+
+    });
+
+
+    var stepSliderValueElement = document.getElementById('slider-step-value');
+
+    stepSlider.noUiSlider.on('update', function( values, handle ) {
+      stepSliderValueElement.innerHTML = values[handle];
+    });
+
+      var socket = io();
+
+      $('a[href="#showpublic"]').click(function(){
+        socket.emit('chat message', stepSliderValueElement.innerHTML);
+
+        var img = $('.img').attr('src');
+        socket.emit('image', img);
+        
+        UIkit.notify({
+            message : '&rarr; &nbsp;| &nbsp; Sent People Value : ' + stepSliderValueElement.innerHTML,
+            status  : 'info',
+            timeout : 1000,
+            pos     : 'bottom-right'
+        });
+
+      }); 
+
+      $('form').submit(function(){
+        socket.emit('bypass1', $('#m').val());
+        
+        UIkit.notify({
+            message : '&rarr; &nbsp;| &nbsp; Bypass1 Sent : ' + $('#m').val(),
+            status  : 'info',
+            timeout : 1000,
+            pos     : 'bottom-right'
+        });
+
+        $('#m').val(''); // Clear
+        return false;
+      });
+
+
+
+      socket.on('chat message', function(msg){
+        var result = $(".redbox").height() + parseInt(msg);
+        $('.redbox').height(result);
+      });
+
+    </script>
+  </body>
+</html>
