@@ -8085,6 +8085,25 @@ a.uk-thumbnail:focus {
 * + .uk-progress {
   margin-top: 15px;
 }
+
+.p-progress {
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  height: 20px;
+  margin-bottom: 15px;
+  /* 1 */
+  /* 2 */
+  line-height: 20px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+}
+/*
+ * Add margin if adjacent element
+ */
+* + .p-progress {
+  margin-top: 15px;
+}
+
 /* Sub-object: `uk-progress-bar`
  ========================================================================== */
 /*
@@ -8136,8 +8155,8 @@ a.uk-thumbnail:focus {
  * Animation
  */
 .uk-progress-striped.uk-active .uk-progress-bar {
-  -webkit-animation: uk-progress-bar-stripes 2s linear infinite;
-  animation: uk-progress-bar-stripes 2s linear infinite;
+  -webkit-animation: uk-progress-bar-stripes 5s linear infinite;
+  animation: uk-progress-bar-stripes 5s linear infinite;
 }
 @-webkit-keyframes uk-progress-bar-stripes {
   0% {
@@ -8164,7 +8183,7 @@ a.uk-thumbnail:focus {
 
   transform: rotate(-90deg);
   position: relative;
-  margin-top: 110px;
+  margin-top: 176px;
   bottom: 0px;
 }
 .fleft {float: left;}
@@ -8188,3 +8207,25 @@ p#personenergy{
   width: 200px;
   margin-top: 118px;
 }
+.blid3 {
+  margin-left: -90px;
+}
+.blid4 {
+    width: 175px;
+    height: 404px;
+    position: relative;
+    margin-top: 62px;
+    bottom: 0px;
+    background: #3C3C3C;
+
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+    border-radius: 4px;
+
+}
+.fpicture {padding-left: 40px;}
+.xbar1 {
+  /*-webkit-box-shadow: 1px 1px 80px 10px #FF0000;*/
+  box-shadow: 24px 1px 90px 6px #FF0000;
+}
+.top190 {margin-top: 190px; position: absolute; }
+.top290 {margin-top: 190px; position: absolute; left: 250px;}

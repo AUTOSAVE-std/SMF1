@@ -5,19 +5,20 @@
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { font: 13px Helvetica, Arial }
-      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+     /* form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
       form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }*/
       #messages { list-style-type: none; margin: 0; padding: 0; }
       #messages li { padding: 5px 10px; }
       #messages li:nth-child(odd) { background: #eee; }
-      .redbox {height: 10px; width: 40px; 
+      .redbox {height: 0px; width: 20px; 
         background-color: red; position: fixed; 
         top:0; right: 0;          
         -webkit-transition: height 2s; /* Safari */
           transition: height 2s;
         -webkit-transition-timing-function: ease;}
 
+        label {color: #bbb;}
 
         .valueset {margin-left: 20px; margin-top: -20px;}
         #slider-step-value {margin-top: 10px; color: #BBBBBB; text-align: center; font-size: 2.5em;}
@@ -25,6 +26,8 @@
         .coverimg {width: 160px; }
         .coverbutton {margin-top: 27px}
         .coverbuttom {margin-top: 20px}
+        .show1 {margin-left: 40px;}
+        .bypasscover {    margin-top: 30px;}
     </style>
 
     <link rel="stylesheet" href="forindex/nouislider.css" />
@@ -36,7 +39,7 @@
 
       <div class="fleft">
         <div class="fleft coverimg">
-          <img src="img/1.jpg" class="img" width="160">
+          <img src="img/0.jpg" class="img" width="160">
           <p id="imgname"> </p>
         </div>
         <div class="fleft coverbutton">
@@ -46,24 +49,41 @@
         </div> 
         <br style="clear:both">
 
-
-
-
           <div class="valueset">
           <div id="slider-step"> </div>
           </div>
 
+      </div>
+      <div class="fleft bypasscover">
+        
+        <div class="form-group has-error">
+            <label>Bypass Total Energy</label>
+            <form action="" id="x1">
+            <input id="m" autocomplete="off" type="text" value="" placeholder="" class="form-control">
+            <button class="btn btn-block btn-xs btn-danger">submit</button>
+            </form>
+        </div>
+        <div class="form-group has-success">
+            <label>Bypass Yours Energy</label>
+            <form action="" id="x2">
+            <input id="n" autocomplete="off" type="text" value="" placeholder="" class="form-control">
+            <button class="btn btn-block btn-xs btn-primary">submit</button>
+            </form>
+        </div>
+      </div>
+      <br style="clear:both">
+      <div class="fleft show1">
+        
+        <p id="showtotalenergy" class="btn btn-block btn-md btn-warning">Total Energy</p>
+        <p id="showenergyperson" class="btn btn-block btn-md btn-info">Your Energy</p>
+        <img src="" class="img2" width="220">
+        <p id="imagename2" class="btn btn-block btn-sm btn-default">Image path</p>
 
       </div>
-
-
+      <div class="redbox"></div>
 
 
     
-    <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
-      <div class="redbox"></div>
-    </form>
     <script src="socket.io-1.2.0.js"></script>
     <script src="jquery-1.11.1.js"></script>
     <script src="forindex/nouislider.min.js"></script>
@@ -95,6 +115,9 @@
     });
 
       var socket = io();
+      var newppcount = 0;
+      var accu = 0;
+      function thefuck(valu) { return (valu / 100)*4;}
 
       $('a[href="#showpublic"]').click(function(){
         socket.emit('chat message', stepSliderValueElement.innerHTML);
@@ -111,25 +134,90 @@
 
       }); 
 
-      $('form').submit(function(){
-        socket.emit('bypass1', $('#m').val());
-        
+      $('a[href="#newpeople"]').click(function(){
+        newppcount++;
+
+        var imgpath = 'img/'+newppcount+'.jpg';
+        $(".img").attr("src",imgpath);
         UIkit.notify({
-            message : '&rarr; &nbsp;| &nbsp; Bypass1 Sent : ' + $('#m').val(),
+            message : '&rarr; &nbsp;| &nbsp; New People : ' + imgpath,
             status  : 'info',
             timeout : 1000,
             pos     : 'bottom-right'
         });
 
+      }); 
+
+      $('form#x1').submit(function(){
+        if(!isNaN($('#m').val())){
+          socket.emit('bypass1', $('#m').val());
+          UIkit.notify({
+              message : '&rarr; &nbsp;| &nbsp; Bypass Total Sent : ' + $('#m').val(),
+              status  : 'info',
+              timeout : 1000,
+              pos     : 'bottom-right'
+          });
+        } else {
+          UIkit.notify({
+              message : '&rarr; &nbsp;| &nbsp; PROBLEM NOT A NUMBER ' ,
+              status  : 'danger',
+              timeout : 2000,
+              pos     : 'bottom-right'
+          });
+        }
+
+
         $('#m').val(''); // Clear
         return false;
       });
 
+      $('form#x2').submit(function(){
+        if(!isNaN($('#n').val())){
+          socket.emit('bypass_your_e', $('#n').val());
+          UIkit.notify({
+              message : '&rarr; &nbsp;| &nbsp; Bypass your Energy : ' + $('#n').val(),
+              status  : 'info',
+              timeout : 1000,
+              pos     : 'bottom-right'
+          });
+        } else {
+          UIkit.notify({
+              message : '&rarr; &nbsp;| &nbsp; PROBLEM NOT A NUMBER ' ,
+              status  : 'danger',
+              timeout : 2000,
+              pos     : 'bottom-right'
+          });
+        }
 
+
+
+        $('#n').val(''); // Clear
+        return false;
+      });
+
+      socket.on('bypass_your_e', function(msg){
+        $('#showenergyperson').html('Show Your Energy : ' + parseInt(msg) + '/100%');
+      });
+
+
+
+      socket.on('bypass1', function(msg){
+        accu = accu + parseInt(msg);
+        $('#showtotalenergy').html('Show Total Energy : ' + accu.toFixed() + '/300');
+        $('.redbox').height(accu);
+      });
+
+      socket.on('image', function(msg){
+        $(".img2").attr("src",msg);
+        var path = $('.img2').attr('src');
+        $('#imagename2').html(path);
+      });
 
       socket.on('chat message', function(msg){
-        var result = $(".redbox").height() + parseInt(msg);
-        $('.redbox').height(result);
+        accu = accu + thefuck(parseInt(msg));
+        $('#showenergyperson').html('Show Your Energy : ' + parseInt(msg) + '/100%');
+        $('#showtotalenergy').html('Show Total Energy : ' + accu + '/300');
+        $('.redbox').height(accu);
       });
 
     </script>

@@ -21,7 +21,9 @@ io.on('connection', function(socket){
     io.emit('image', msg);
      console.log('image sent');
   });
-
+  socket.on('bypass_your_e', function(msg){
+    io.emit('bypass_your_e', msg);
+  });
 
   socket.on('bypass1', function(msg){
     console.log('bypass1: ' + msg);
